@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+import 'package:your_project/planet_database.dart';
+import 'package:your_project/planet.dart';
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<Planet>> planets;
+
+  @override
+  void initState() {
+    super.initState();
+    planets = PlanetDatabase.instance.readAll();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Planetas'),
+      ),
+      body: FutureBuilder<List<Planet>>(
+        future: planets,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final planet = snapshot.data![index];
+              return ListTile(
+                title: Text(planet.name),
+                subtitle: Text(planet.nickname ?? ''),
+                onTap: () {
+                  // Mostrar detalhes do planeta
+                },
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navegar para a tela de cadastro/edição
+        },
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
